@@ -1,44 +1,48 @@
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 
-const Add = ({ employees, setEmployees, setIsAdding }) => {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
+const Add = ({ setIsAdding }) => {
+  const [id, setId] = useState('');
+  const [numeroDocumento, setNumerodocumento] = useState('');
   const [email, setEmail] = useState('');
-  const [salary, setSalary] = useState('');
-  const [date, setDate] = useState('');
+  const [nombre, setNombre] = useState('');
+  const [password, setPassword] = useState('');
+  const [nombreUsuario, setNombreusuario] = useState('');
+  const [tiposDocumento, setTiposDocumento] = useState([]);
+
+  const addUser = async () => {
+    const url = 'http://localhost:8094/api/usuarios/';
+    await axios.post(url,{
+      "nombre":nombre,
+      "nombreUsuario":nombreUsuario,
+      "numeroDocumento":numeroDocumento,
+      "email":email,
+      "password":password,
+      "idTipoDocumento":5     
+    });
+  }
+
+
 
   const handleAdd = e => {
     e.preventDefault();
 
-    if (!firstName || !lastName || !email || !salary || !date) {
+    if (!numeroDocumento || !nombre || !email || !password || !nombreUsuario) {
       return Swal.fire({
         icon: 'error',
         title: 'Error!',
-        text: 'All fields are required.',
+        text: 'Todos los campos son requeridos.',
         showConfirmButton: true,
       });
+    }else{
+      addUser();
     }
-
-    const id = employees.length + 1;
-    const newEmployee = {
-      id,
-      firstName,
-      lastName,
-      email,
-      salary,
-      date,
-    };
-
-    employees.push(newEmployee);
-    localStorage.setItem('employees_data', JSON.stringify(employees));
-    setEmployees(employees);
-    setIsAdding(false);
 
     Swal.fire({
       icon: 'success',
       title: 'Added!',
-      text: `${firstName} ${lastName}'s data has been Added.`,
+      text: `${nombreUsuario} ha sido agregado.`,
       showConfirmButton: false,
       timer: 1500,
     });
@@ -47,22 +51,22 @@ const Add = ({ employees, setEmployees, setIsAdding }) => {
   return (
     <div className="small-container">
       <form onSubmit={handleAdd}>
-        <h1>Add Employee</h1>
-        <label htmlFor="firstName">First Name</label>
+        <h1>Agregar usuario</h1>
+        <label htmlFor="firstName">Nombre</label>
         <input
           id="firstName"
           type="text"
           name="firstName"
-          value={firstName}
-          onChange={e => setFirstName(e.target.value)}
+          value={nombre}
+          onChange={e => setNombre(e.target.value)}
         />
-        <label htmlFor="lastName">Last Name</label>
+        <label htmlFor="lastName">Nombre usuario</label>
         <input
           id="lastName"
           type="text"
           name="lastName"
-          value={lastName}
-          onChange={e => setLastName(e.target.value)}
+          value={nombreUsuario}
+          onChange={e => setNombreusuario(e.target.value)}
         />
         <label htmlFor="email">Email</label>
         <input
@@ -72,21 +76,21 @@ const Add = ({ employees, setEmployees, setIsAdding }) => {
           value={email}
           onChange={e => setEmail(e.target.value)}
         />
-        <label htmlFor="salary">Salary ($)</label>
+        <label htmlFor="salary">Password</label>
         <input
-          id="salary"
-          type="number"
-          name="salary"
-          value={salary}
-          onChange={e => setSalary(e.target.value)}
+          id="password"
+          type="password"
+          name="password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
         />
-        <label htmlFor="date">Date</label>
+        <label htmlFor="date">Numero documento</label>
         <input
           id="date"
-          type="date"
+          type="text"
           name="date"
-          value={date}
-          onChange={e => setDate(e.target.value)}
+          value={numeroDocumento}
+          onChange={e => setNumerodocumento(e.target.value)}
         />
         <div style={{ marginTop: '30px' }}>
           <input type="submit" value="Add" />

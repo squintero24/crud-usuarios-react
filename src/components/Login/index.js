@@ -1,17 +1,34 @@
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 
 const Login = ({ setIsAuthenticated }) => {
-  const adminEmail = 'admin@example.com';
-  const adminPassword = 'qwerty';
 
-  const [email, setEmail] = useState('admin@example.com');
-  const [password, setPassword] = useState('qwerty');
+  const [nombreUsuario, setNombreusuario] = useState('');
+  const [password, setPassword] = useState('');
+  const [respuestaLogin, setRespuestaLogin] = useState('');
+  const url = 'http://localhost:8094/api/usuarios/login'; 
+
+  useEffect(() => {
+    validateLogin();
+  })
+
+  const validateLogin = async () => {
+    try {
+      const respuesta = await axios.post(url,{"nombreUsuario":nombreUsuario,"password":password});
+      setRespuestaLogin(respuesta);
+    } catch (error) {
+      console.error('Error al logearse', error);
+    }
+  }
 
   const handleLogin = e => {
     e.preventDefault();
+  
 
-    if (email === adminEmail && password === adminPassword) {
+    console.log(respuestaLogin)
+
+    if (respuestaLogin.data?.statusCode === 200) {
       Swal.fire({
         timer: 1500,
         showConfirmButton: false,
@@ -24,7 +41,7 @@ const Login = ({ setIsAuthenticated }) => {
 
           Swal.fire({
             icon: 'success',
-            title: 'Successfully logged in!',
+            title: 'Se ha logeado con exito',
             showConfirmButton: false,
             timer: 1500,
           });
@@ -41,7 +58,7 @@ const Login = ({ setIsAuthenticated }) => {
           Swal.fire({
             icon: 'error',
             title: 'Error!',
-            text: 'Incorrect email or password.',
+            text: 'Contraseña o nombre de usuario incorrecto',
             showConfirmButton: true,
           });
         },
@@ -52,22 +69,20 @@ const Login = ({ setIsAuthenticated }) => {
   return (
     <div className="small-container">
       <form onSubmit={handleLogin}>
-        <h1>Admin Login</h1>
-        <label htmlFor="email">Email</label>
+        <h1>Inicio de sesion</h1>
+        <label htmlFor="email">Nombre de usuario</label>
         <input
           id="email"
-          type="email"
+          type="text"
           name="email"
-          placeholder="admin@example.com"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
+          value={nombreUsuario}
+          onChange={e => setNombreusuario(e.target.value)}
         />
-        <label htmlFor="password">Password</label>
+        <label htmlFor="password">Contraseña</label>
         <input
           id="password"
           type="password"
           name="password"
-          placeholder="qwerty"
           value={password}
           onChange={e => setPassword(e.target.value)}
         />

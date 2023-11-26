@@ -5,8 +5,8 @@ const Logout = ({ setIsAuthenticated }) => {
   const handleLogout = () => {
     Swal.fire({
       icon: 'question',
-      title: 'Logging Out',
-      text: 'Are you sure you want to log out?',
+      title: 'Cerrando sesion',
+      text: 'Esta seguro que desea salir de la sesion?',
       showCancelButton: true,
       confirmButtonText: 'Yes',
     }).then(result => {
